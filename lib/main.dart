@@ -6,13 +6,11 @@ import 'package:flutter/services.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // The reference app is portrait-only.
   SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Match the dark-blue status bar used in the screenshot.
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Color(0xFF064A86),
@@ -52,7 +50,14 @@ class CricketGamePage extends StatefulWidget {
 
 class _CricketGamePageState extends State<CricketGamePage> {
   static const int _startingBalls = 6;
-  static const List<int> _possibleRuns = <int>[1, 2, 3, 4, 6];
+
+  static const List<int> _possibleRuns = <int>[
+    1,
+    2,
+    3,
+    4,
+    6,
+  ];
 
   final Random _random = Random();
 
@@ -87,8 +92,16 @@ class _CricketGamePageState extends State<CricketGamePage> {
 
   String get _lastRunText {
     final int? score = _lastRuns;
-    if (score == null) return '';
-    return score == 1 ? '1 Run' : '$score Runs';
+
+    if (score == null) {
+      return '';
+    }
+
+    if (score == 1) {
+      return '1 Run';
+    }
+
+    return '$score Runs';
   }
 
   @override
@@ -114,12 +127,24 @@ class _CricketGamePageState extends State<CricketGamePage> {
         ),
       ),
       body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          // Scales gently so the UI stays close to the reference on phones
-          // while still fitting smaller emulator sizes.
-          final double tileSize = (constraints.maxWidth * 0.29).clamp(92.0, 116.0);
-          final double gap = (constraints.maxWidth * 0.07).clamp(18.0, 28.0);
-          final double topGap = (constraints.maxHeight * 0.245).clamp(90.0, 145.0);
+        builder: (
+          BuildContext context,
+          BoxConstraints constraints,
+        ) {
+          final double tileSize = (constraints.maxWidth * 0.29).clamp(
+            92.0,
+            116.0,
+          );
+
+          final double gap = (constraints.maxWidth * 0.07).clamp(
+            18.0,
+            28.0,
+          );
+
+          final double topGap = (constraints.maxHeight * 0.245).clamp(
+            90.0,
+            145.0,
+          );
 
           return SizedBox.expand(
             child: Column(
@@ -146,8 +171,12 @@ class _CricketGamePageState extends State<CricketGamePage> {
                   width: tileSize * 2 + gap,
                   child: const Row(
                     children: <Widget>[
-                      Expanded(child: _ScoreLabel('Runs')),
-                      Expanded(child: _ScoreLabel('Balls')),
+                      Expanded(
+                        child: _ScoreLabel('Runs'),
+                      ),
+                      Expanded(
+                        child: _ScoreLabel('Balls'),
+                      ),
                     ],
                   ),
                 ),
@@ -184,25 +213,41 @@ class _CricketGamePageState extends State<CricketGamePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 ElevatedButton(
                   key: const Key('bat_restart_button'),
                   onPressed: _bat,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _inningsFinished ? restartRed : batButtonBlue,
+                    backgroundColor:
+                        _inningsFinished ? restartRed : batButtonBlue,
+
                     foregroundColor: Colors.white,
+
                     elevation: 5,
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+
+                    // Bigger button
+                    minimumSize: _inningsFinished
+                        ? const Size(95, 42)
+                        : const Size(75, 42),
+
+                    padding: _inningsFinished
+                        ? const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 11,
+                          )
+                        : const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 11,
+                          ),
+
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
                   child: Text(
                     _inningsFinished ? 'Restart' : 'Bat',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
